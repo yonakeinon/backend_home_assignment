@@ -1,0 +1,19 @@
+CREATE TABLE vendors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    certifications TEXT[],
+    rating FLOAT DEFAULT 0
+);
+CREATE DATABASE procurement_db;
+
+\c procurement_db;
+
+CREATE TABLE procurements (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    items JSON NOT NULL,
+    status VARCHAR(50) DEFAULT 'open',
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

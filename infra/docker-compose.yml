@@ -1,0 +1,82 @@
+version: '3.9'
+
+services:
+  vendor-service:
+    build:
+      context: ../backend/vendor-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=vendor-db
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=vendor_db
+    depends_on:
+      - vendor-db
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  procurement-service:
+    build:
+      context: ../backend/procurement-service
+    ports:
+      - "3002:3002"
+    environment:
+      - DB_HOST=procurement-db
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=procurement_db
+    depends_on:
+      - procurement-db
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      vendor-service:
+        condition: service_healthy
+      procurement-service:
+        condition: service_healthy
+
+
+  vendor-db:
+    image: postgres:13
+    container_name: vendor-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vendor_db
+    volumes:
+      - vendor-db-data:/var/lib/postgresql/data
+      - ./db-init/init-vendor-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  procurement-db:
+    image: postgres:13
+    container_name: procurement-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: procurement_db
+    volumes:
+      - procurement-db-data:/var/lib/postgresql/data
+      - ./db-init/init-procurement-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+
+volumes:
+  vendor-db-data:
+  procurement-db-data:
