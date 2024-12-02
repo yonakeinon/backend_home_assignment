@@ -55,9 +55,9 @@ services:
       - sourcix-network  
     depends_on:
       vendor-service:
-        condition: service_healthy
+        condition: service_started
       procurement-service:
-        condition: service_healthy
+        condition: service_started
 
 
   vendor-db:
