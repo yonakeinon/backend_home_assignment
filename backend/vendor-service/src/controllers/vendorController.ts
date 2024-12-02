@@ -6,7 +6,7 @@ import {getVendors, addVendor} from '../services/vendorService';
 const router = express.Router();
 
 // Get all vendors
-router.get('/vendors', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const vendors = await getVendors();
         res.json(vendors);
@@ -21,7 +21,7 @@ router.get('/vendors', async (req, res) => {
 });
 
 // Add a new vendor
-router.post('/vendors', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const validationError = checkVendorData(req.body);
         if (validationError) {

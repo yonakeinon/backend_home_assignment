@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:3001/vendors';
+const baseUrl = 'http://localhost:3001/api/vendors';
 
 export default {
   async getVendors() {

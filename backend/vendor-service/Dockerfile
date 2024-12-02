@@ -13,7 +13,7 @@ COPY ./package.json ./
 # COPY ./package-lock.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install cors @types/cors
 
 # Copy the rest of the application
 COPY . .

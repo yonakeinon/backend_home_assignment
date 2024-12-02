@@ -1,12 +1,14 @@
 import express from 'express';
 import vendorRoutes from './controllers/vendorController';
+import cors from 'cors';
 
 const app = express();
 
 // Middleware
-app.use(express.json()); // Parses JSON request bodies
+app.use(cors());
+app.use(express.json());
 
-// Routes
-app.use('/vendors', vendorRoutes);
+// Routes with /api prefix
+app.use('/api/vendors', vendorRoutes);
 
 export default app;
