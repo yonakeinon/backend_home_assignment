@@ -1,10 +1,13 @@
 <template>
     <div>
       <h1>Dashboard</h1>
-      <VendorList :vendors="vendors" />
-      <ProcurementList :procurements="procurements" />
+      <div class="dashboard-container">
+        <VendorList :vendors="vendors" />
+        <ProcurementList :procurements="procurements" />
+      </div>
     </div>
   </template>
+
   
   <script>
   import VendorList from '../components/VendorList.vue';

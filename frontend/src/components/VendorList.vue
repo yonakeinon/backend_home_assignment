@@ -10,7 +10,18 @@
 </template>
 
 <script>
+import vendorService from '../services/vendorService';
+
 export default {
-  props: ['vendors']
+  data() {
+    return {
+      vendors: [],
+    };
+  },
+  mounted() {
+    vendorService.getVendors().then((data) => {
+      this.vendors = data;
+    });
+  },
 };
 </script>
