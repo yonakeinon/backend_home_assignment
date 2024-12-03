@@ -76,6 +76,17 @@ Before you begin, ensure you have the following installed on your machine:
    http://localhost:3002/health
    ```
 
+
+## Accessing the UI Dashboard
+
+Once the containers are running, you can access the UI dashboard at:
+   ```
+   http://localhost:8080
+   ```
+
+The dashboard provides a user-friendly interface to interact with the procurement service and view the data. Make sure to explore the various features available in the dashboard.
+
+
 ## Tasks
 
 ### 1. Fix the Invalid Date Issue
