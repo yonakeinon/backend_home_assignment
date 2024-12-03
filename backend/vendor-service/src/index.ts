@@ -9,5 +9,5 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Procurement Service listening on port ${PORT}`);
+  console.log(`Vendor Service listening on port ${PORT}`);
 });

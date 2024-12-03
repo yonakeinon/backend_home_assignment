@@ -28,15 +28,25 @@ services:
   procurement-service:
     build:
       context: ../backend/procurement-service
+      dockerfile: Dockerfile
+    container_name: procurement-service
     ports:
       - "3002:3002"
     networks:
       - sourcix-network
     environment:
+      - PORT=3002
       - DB_HOST=procurement-db
+      - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=password
       - DB_NAME=procurement_db
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
     depends_on:
       - procurement-db
     healthcheck:
@@ -74,7 +84,12 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - sourcix-network  
+      - sourcix-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   procurement-db:
     image: postgres:13
@@ -90,7 +105,12 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - sourcix-network  
+      - sourcix-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   vendor-db-data:

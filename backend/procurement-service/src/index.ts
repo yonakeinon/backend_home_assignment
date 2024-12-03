@@ -1,6 +1,5 @@
-import express from 'express';
+import app from './app';
 
-const app = express();
 const PORT = process.env.PORT || 3002;
 
 app.get('/', (req, res) => res.send('Procurement Service is running!'));
@@ -10,5 +9,5 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Vendor Service listening on port ${PORT}`);
+  console.log(`Procurement Service listening on port ${PORT}`);
 });

@@ -1,10 +1,11 @@
 import express from 'express';
 import { getProcurements, addProcurement } from '../services/procurementService';
+import { ProcurementStatus } from '../models/ProcurementStatus';
 
 const router = express.Router();
 
-// Get all procurement requests
-router.get('/procurements', async (req, res) => {
+// GET /api/procurements
+router.get('/', async (req, res) => {
     try {
         const procurements = await getProcurements();
         res.json(procurements);
@@ -15,22 +16,24 @@ router.get('/procurements', async (req, res) => {
             res.status(500).json({ error: 'Unknown error occurred' });
         }
     }
-    
 });
 
-// Add a new procurement request
-router.post('/procurements', async (req, res) => {
+// POST /api/procurements
+router.post('/', async (req, res)=> {
     try {
-        const newProcurement = await addProcurement(req.body);
-        res.status(201).json(newProcurement);
-    } catch (error: unknown) {
+        const procurement = await addProcurement({
+            ...req.body,
+            status: ProcurementStatus.OPEN
+        });
+        res.status(201).json(procurement);
+    } catch (error) {
         if (error instanceof Error) {
-            res.status(500).json({ error: error.message });
+            console.error('Error creating procurement:', error);
+            res.status(500).json({ error: 'Internal server error' });
         } else {
             res.status(500).json({ error: 'Unknown error occurred' });
         }
     }
-    
 });
 
 export default router;

@@ -1,6 +1,7 @@
 # Build stage
 FROM node:18 as build
 WORKDIR /app
+RUN apt-get update && apt-get install -y curl
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ .

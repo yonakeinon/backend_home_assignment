@@ -4,15 +4,16 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y curl
 
-
 # Copy the service-specific package.json
 COPY ./package.json ./
+# COPY ../../package.json ../../package-lock.json ./
+
 
 # Copy the root-level package-lock.json
 # COPY ./package-lock.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install cors @types/cors
 
 # Copy the rest of the application
 COPY . .
