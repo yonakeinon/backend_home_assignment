@@ -1,159 +1,165 @@
+# Sourcix Home Assignment
+
+## Overview
+
+This home assignment involves working with a procurement service built using Node.js, Express, and TypeScript. The goal is to enhance the service by fixing existing issues and integrating external data sources.
+
+## Project Structure
+
+Here’s the structure of the project:
+
+```
+/project-root
+│
+├── backend
+│   ├── procurement-service
+│   │   ├── src
+│   │   │   ├── controllers
+│   │   │   │   └── procurementController.ts
+│   │   │   ├── app.ts
+│   │   │   └── index.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── vendor-service
+│       ├── src
+│       │   ├── controllers
+│       │   │   └── vendorController.ts
+│       │   ├── app.ts
+│       │   └── index.ts
+│       ├── package.json
+│       └── tsconfig.json
+│
+├── docker-compose.yml
+└── README.md
+```
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed on your machine:
+
+- [Docker](https://www.docker.com/get-started) (version 20.10 or higher)
+- [Docker Compose](https://docs.docker.com/compose/install/) (version 1.27 or higher)
+- [Node.js](https://nodejs.org/) (version 16 or higher)
+- [npm](https://www.npmjs.com/get-npm) (comes with Node.js)
+
 ## Getting Started
 
-### Prerequisites
+1. **Clone the Repository**
 
-Ensure you have the following installed:
-- Docker
-- Docker Compose
-
-### Setup
-
-1. Clone the repository:
    ```bash
    git clone <repository-url>
-   cd sourcix-backend-assignment
+   cd <repository-directory>
    ```
 
-2. Navigate to the `infra` directory:
-   ```bash
-   cd infra
-   ```
+2. **Build and Run the Docker Containers**
 
-3. Start the services:
+   Use Docker Compose to build and run the services:
+
    ```bash
    docker-compose up --build
    ```
 
-4. Access the services:
-   - **Vendor Service**: [http://localhost:3001](http://localhost:3001)
-   - **Procurement Service**: [http://localhost:3002](http://localhost:3002)
-   - **Frontend UI (Dashboard)**: [http://localhost:8080](http://localhost:8080)
+   This command will build the Docker images and start the containers defined in the `docker-compose.yml` file, located in the root of the project.
 
----
+3. **Access the Application**
 
-## Accessing Services
+   Once the containers are running, you can access the procurement service at:
 
-### Vendor Service
-
-- API Endpoints:
-  - GET `/vendors`: Fetch all vendors.
-  - POST `/vendors`: Add a new vendor.
-- Base URL: [http://localhost:3001](http://localhost:3001)
-
-### Procurement Service
-
-- API Endpoints:
-  - GET `/procurements`: Fetch all procurement requests.
-  - POST `/procurements`: Add a new procurement request.
-- Base URL: [http://localhost:3002](http://localhost:3002)
-
-### Frontend Dashboard
-
-- The Vue.js dashboard provides an interface to interact with the Vendor and Procurement services.
-- Access it at [http://localhost:8080](http://localhost:8080).
-- Key Features:
-  - View all vendors and procurement requests.
-  - Add new vendors and procurement requests.
-
----
-
-## Docker Compose Setup
-
-The `docker-compose.yml` file orchestrates the services and databases.
-
-1. **Vendor Service**:
-   - Port: `3001`
-   - Depends on `vendor_db`.
-
-2. **Procurement Service**:
-   - Port: `3002`
-   - Depends on `procurement_db`.
-
-3. **Frontend Dashboard**:
-   - Port: `8080`
-   - Depends on both backend services.
-
-4. **PostgreSQL Databases**:
-   - `vendor_db`: Stores vendor data.
-   - `procurement_db`: Stores procurement data.
-
-### To Run Docker Compose:
-
-1. Ensure you are in the `infra` directory:
-   ```bash
-   cd infra
+   ```
+   http://localhost:3002
    ```
 
-2. Start the services:
+   You can also check the health endpoint:
+
+   ```
+   http://localhost:3002/health
+   ```
+
+## Tasks
+
+### 1. Fix the Invalid Date Issue
+
+Currently, the `createdat` field in the response may show an invalid date in the UI. Your task is to ensure that the date is formatted correctly before sending it to the client. 
+
+- Investigate the code in the procurement controller and ensure that the date is being set to the current date when a new request is created.
+- If the date is being retrieved from a database, ensure it is formatted correctly in ISO format.
+
+### 2. Integrate External API Data
+
+Enhance the procurement service by integrating data from an external API. 
+
+- Choose an external API that provides relevant data (e.g., product information, inventory levels, etc.).
+- Implement a new endpoint that fetches data from this external API and returns it in a structured format.
+- Ensure proper error handling and logging for the API requests.
+
+### 3. Add Procurements to Vendors
+
+Enhance the vendor service by integrating data from an external API to create procurements for each vendor.
+
+- Choose an external API that provides relevant procurement data (e.g., product information, inventory levels, etc.). You can use the **JSONPlaceholder** API or any other suitable API.
+- For each vendor, create at least **five procurements** with items and quantities.
+- Implement a new endpoint in the vendor service (e.g., `/api/vendors/:id/procurements`) that allows you to fetch and create procurements for a specific vendor.
+- Ensure that the procurement data includes:
+  - `title`: A brief description of the procurement.
+  - `items`: An array of items, where each item has:
+    - `itemName`: The name of the item.
+    - `quantity`: The quantity of the item.
+- Ensure proper error handling and logging for the API requests.
+- Return a summary of the created procurements or any errors encountered during the process.
+
+### 4. Add Filtering Endpoints for Procurements
+
+Enhance the procurement service by adding two new endpoints to filter procurements.
+
+- **Endpoint 1**: Filter procurements by quantity.
+  - **Path**: `/api/procurements/filter-by-quantity`
+  - **Method**: `GET`
+  - **Query Parameter**: `minQuantity` (the minimum quantity to filter procurements)
+  - **Response**: Return all procurements where the quantity of items is greater than the specified `minQuantity`.
+
+- **Endpoint 2**: Filter procurements by status.
+  - **Path**: `/api/procurements/filter-by-status`
+  - **Method**: `GET`
+  - **Query Parameter**: `status` (the status to filter procurements)
+  - **Response**: Return all procurements that match the specified status.
+
+Ensure that both endpoints handle errors appropriately and return meaningful messages if no procurements are found.
+
+### Bonus Task: Add Filtering Endpoint for Orders
+
+Enhance the procurement service by adding an endpoint to filter procurements based on a specific ISO certification and the vendor rating, and show all vendors that have those procurements.
+
+- **Endpoint**: Filter procurements by ISO certification and vendor rating.
+  - **Path**: `/api/procurements/filter-by-certification-and-rating`
+  - **Method**: `GET`
+  - **Query Parameters**:
+    - `isoCertification`: The specific ISO certification to filter procurements.
+    - `minVendorRating`: The minimum vendor rating to filter procurements.
+  - **Response**: Return all procurements that match the specified ISO certification and include the associated vendors for each procurement that meet the minimum vendor rating.
+
+Ensure that the endpoint handles errors appropriately and returns meaningful messages if no procurements or vendors are found.
+
+## Submission
+
+Once you have completed the tasks, please follow these steps:
+
+1. **Fork the Repository**: Fork the original home assignment repository on GitHub to your own account.
+
+2. **Make Your Changes**: Implement the required features and any additional improvements you wish to add.
+
+3. **Test Your Application**: Ensure that your application runs correctly by executing the following command in the root of your project:
+
    ```bash
    docker-compose up --build
    ```
 
-3. To stop the services:
-   ```bash
-   docker-compose down
-   ```
+   Make sure that all services are running without errors and that you can access the application at `http://localhost:3002`.
+
+4. **Push Your Changes**: Once you are satisfied with your implementation, push your changes to your forked repository.
+
+5. **Provide a Link**: Send a link to your GitHub repository when it is ready for review.
 
 ---
 
-## Database Initialization Scripts
-
-### Vendor DB Script
-
-**`infra/db-init/init-vendor-db.sql`**
-```sql
-CREATE TABLE IF NOT EXISTS vendors (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    certifications TEXT[],
-    rating FLOAT DEFAULT 0
-);
-
-INSERT INTO vendors (name, location, certifications, rating) VALUES
-('Vendor A', 'New York', '{"ISO9001"}', 4.5),
-('Vendor B', 'Los Angeles', '{"ISO14001"}', 4.0);
-```
-
-### Procurement DB Script
-
-**`infra/db-init/init-procurement-db.sql`**
-```sql
-CREATE TABLE IF NOT EXISTS procurements (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    items JSON NOT NULL,
-    status VARCHAR(50) DEFAULT 'open',
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-INSERT INTO procurements (title, description, items, status) VALUES
-('Request A', 'Need 100 units of Item X', '[{"itemName":"Item X","quantity":100}]', 'open'),
-('Request B', 'Need 50 units of Item Y', '[{"itemName":"Item Y","quantity":50}]', 'in-review');
-```
-
----
-
-## Testing
-
-Run tests for each service to ensure functionality:
-
-1. Navigate to the service directory:
-   ```bash
-   cd backend/vendor-service
-   ```
-
-2. Run tests:
-   ```bash
-   yarn test
-   ```
-
-Repeat for the Procurement Service:
-
-```bash
-cd backend/procurement-service
-yarn test
-```
-
----
+Good luck, and happy coding!
